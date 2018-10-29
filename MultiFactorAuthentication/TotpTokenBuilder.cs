@@ -106,7 +106,7 @@ namespace MultiFactorAuthentication
             return binCode;
         }
 
-        public string ComputeHotp(long binCode, int digitCount)
+        public string ExtractHotp(long binCode, int digitCount)
         {
             /*
              * Extracts the least-significant digits from the hash

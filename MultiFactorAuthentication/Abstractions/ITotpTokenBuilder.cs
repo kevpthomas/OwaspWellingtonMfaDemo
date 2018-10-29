@@ -97,7 +97,7 @@ namespace MultiFactorAuthentication.Abstractions
         /// References:
         /// https://tools.ietf.org/html/rfc4226
         /// </remarks>
-        string ComputeHotp(long binCode, int digitCount);
+        string ExtractHotp(long binCode, int digitCount);
 
         /// <summary>
         /// Computes the remaining seconds in the current TOTP time step interval.

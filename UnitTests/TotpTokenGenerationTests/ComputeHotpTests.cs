@@ -27,7 +27,7 @@ namespace UnitTests.TotpTokenGenerationTests
                 });
 
             "When HOTP value is computed"
-                .x(() => hotp = TestInstance.ComputeHotp(binCode, digitCount));
+                .x(() => hotp = TestInstance.ExtractHotp(binCode, digitCount));
 
             "Then the HOTP is the least significant 6 digits"
                 .x(() => hotp.ShouldBe($"{expectedHotp}"));
@@ -43,7 +43,7 @@ namespace UnitTests.TotpTokenGenerationTests
                 .x(() => binCode = expectedHotp = Faker.Random.Long(111111, 999999));
 
             "When HOTP value is computed"
-                .x(() => hotp = TestInstance.ComputeHotp(binCode, digitCount));
+                .x(() => hotp = TestInstance.ExtractHotp(binCode, digitCount));
 
             "Then the HOTP is the least significant 6 digits"
                 .x(() => hotp.ShouldBe($"{expectedHotp}"));
@@ -65,7 +65,7 @@ namespace UnitTests.TotpTokenGenerationTests
                 .x(() => binCode = expectedHotp = Faker.Random.Long(hashMinimum, hashMaximum));
 
             "When HOTP value is computed"
-                .x(() => hotp = TestInstance.ComputeHotp(binCode, digitCount));
+                .x(() => hotp = TestInstance.ExtractHotp(binCode, digitCount));
 
             "Then the HOTP is the least significant 6 digits"
                 .x(() => hotp.ShouldBe($"{expectedPadding}{expectedHotp}"));
