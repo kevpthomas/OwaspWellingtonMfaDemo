@@ -15,6 +15,7 @@ The applications contained herein are intended to demonstrate some key concepts 
 * .NET Core 2.1 console application to demonstrate a TOTP token provider
 * .NET Standard class library contains most TOTP functionality
 * .NET Framework unit test coverage over most TOTP MFA functionality
+* __Make the Cyber Safer with MFA.pdf__ are the slides and speaker notes for the talk accomapnying this demo codebase
 
 There is no identity database, all credentials and keys are stored in memory purely for demonstration purposes. Classes in the __OwaspDemo.Identity__ namespace were designed and commented to closely mimic equivalent classes in the __Microsoft.AspNetCore.Identity__ namespace.
 
