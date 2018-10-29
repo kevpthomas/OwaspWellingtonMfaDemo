@@ -1,0 +1,169 @@
+These requirements and considerations are extracted from the original RFC documentation,
+and are useful for deriving appropriate unit tests.
+https://tools.ietf.org/html/rfc4226
+https://tools.ietf.org/html/rfc6238
+
+
+RFC 4226 HOTP
+
+   This document proposes a simple One-Time Password algorithm that can
+   be implemented by any hardware manufacturer or software developer to
+   create interoperable authentication devices and software agents.  The
+   algorithm is event-based so that it can be embedded in high-volume
+   devices such as Java smart cards, USB dongles, and GSM SIM cards.
+   The presented algorithm is made freely available to the developer
+   community under the terms and conditions of the IETF Intellectual
+   Property Rights [RFC3979].
+
+4.  Algorithm Requirements
+
+   This section presents the main requirements that drove this algorithm
+   design.  A lot of emphasis was placed on end-consumer usability as
+   well as the ability for the algorithm to be implemented by low-cost
+   hardware that may provide minimal user interface capabilities.
+   
+   R1 - The algorithm MUST be sequence- or counter-based: one of the
+   goals is to have the HOTP algorithm embedded in high-volume devices
+   such as Java smart cards, USB dongles, and GSM SIM cards.
+
+   R2 - The algorithm SHOULD be economical to implement in hardware by
+   minimizing requirements on battery, number of buttons, computational
+   horsepower, and size of LCD display.
+
+   R3 - The algorithm MUST work with tokens that do not support any
+   numeric input, but MAY also be used with more sophisticated devices
+   such as secure PIN-pads.
+
+   R4 - The value displayed on the token MUST be easily read and entered
+   by the user: This requires the HOTP value to be of reasonable length.
+   The HOTP value must be at least a 6-digit value.  It is also
+   desirable that the HOTP value be 'numeric only' so that it can be
+   easily entered on restricted devices such as phones.
+
+   R5 - There MUST be user-friendly mechanisms available to
+   resynchronize the counter.  Section 7.4 and Appendix E.4 details the
+   resynchronization mechanism proposed in this document
+
+   R6 - The algorithm MUST use a strong shared secret.  The length of
+   the shared secret MUST be at least 128 bits.  This document
+   RECOMMENDs a shared secret length of 160 bits.
+
+6.  Security Considerations
+
+   The conclusion of the security analysis detailed in the Appendix is
+   that, for all practical purposes, the outputs of the Dynamic
+   Truncation (DT) on distinct counter inputs are uniformly and
+   independently distributed 31-bit strings.
+
+   The security analysis then details the impact of the conversion from
+   a string to an integer and the final reduction modulo 10^Digit, where
+   Digit is the number of digits in an HOTP value.
+
+   The analysis demonstrates that these final steps introduce a
+   negligible bias, which does not impact the security of the HOTP
+   algorithm, in the sense that the best possible attack against the
+   HOTP function is the brute force attack.
+
+   Assuming an adversary is able to observe numerous protocol exchanges
+   and collect sequences of successful authentication values.  This
+   adversary, trying to build a function F to generate HOTP values based
+   on his observations, will not have a significant advantage over a
+   random guess.
+
+   The logical conclusion is simply that the best strategy will once
+   again be to perform a brute force attack to enumerate and try all the
+   possible values.
+
+   Considering the security analysis in the Appendix of this document,
+   without loss of generality, we can approximate closely the security
+   of the HOTP algorithm by the following formula:
+
+                            Sec = sv/10^Digit
+
+   Where:
+     - Sec is the probability of success of the adversary;
+     - s is the look-ahead synchronization window size;
+     - v is the number of verification attempts;
+     - Digit is the number of digits in HOTP values.
+
+   Obviously, we can play with s, T (the Throttling parameter that would
+   limit the number of attempts by an attacker), and Digit until
+   achieving a certain level of security, still preserving the system
+   usability.
+
+
+   
+RFC 6238 TOTP
+   
+3.  Algorithm Requirements
+
+   This section summarizes the requirements taken into account for
+   designing the TOTP algorithm.
+
+   R1: The prover (e.g., token, soft token) and verifier (authentication
+       or validation server) MUST know or be able to derive the current
+       Unix time (i.e., the number of seconds elapsed since midnight UTC
+       of January 1, 1970) for OTP generation.  See [UT] for a more
+       detailed definition of the commonly known "Unix time".  The
+       precision of the time used by the prover affects how often the
+       clock synchronization should be done; see Section 6.
+
+   R2: The prover and verifier MUST either share the same secret or the
+       knowledge of a secret transformation to generate a shared secret.
+
+   R3: The algorithm MUST use HOTP [RFC4226] as a key building block.
+
+   R4: The prover and verifier MUST use the same time-step value X.
+
+   R5: There MUST be a unique secret (key) for each prover.
+
+   R6: The keys SHOULD be randomly generated or derived using key
+       derivation algorithms.
+
+   R7: The keys MAY be stored in a tamper-resistant device and SHOULD be
+       protected against unauthorized access and usage.
+
+	   
+5.  Security Considerations
+
+5.1.  General
+
+   The security and strength of this algorithm depend on the properties
+   of the underlying building block HOTP, which is a construction based
+   on HMAC [RFC2104] using SHA-1 as the hash function.
+
+   The conclusion of the security analysis detailed in [RFC4226] is
+   that, for all practical purposes, the outputs of the dynamic
+   truncation on distinct inputs are uniformly and independently
+   distributed strings.
+
+   The analysis demonstrates that the best possible attack against the
+   HOTP function is the brute force attack.
+
+   As indicated in the algorithm requirement section, keys SHOULD be
+   chosen at random or using a cryptographically strong pseudorandom
+   generator properly seeded with a random value.
+
+   Keys SHOULD be of the length of the HMAC output to facilitate
+   interoperability.
+
+   We RECOMMEND following the recommendations in [RFC4086] for all
+   pseudorandom and random number generations.  The pseudorandom numbers
+   used for generating the keys SHOULD successfully pass the randomness
+   test specified in [CN], or a similar well-recognized test.
+
+   All the communications SHOULD take place over a secure channel, e.g.,
+   Secure Socket Layer/Transport Layer Security (SSL/TLS) [RFC5246] or
+   IPsec connections [RFC4301].
+
+   We also RECOMMEND storing the keys securely in the validation system,
+   and, more specifically, encrypting them using tamper-resistant
+   hardware encryption and exposing them only when required: for
+   example, the key is decrypted when needed to verify an OTP value, and
+   re-encrypted immediately to limit exposure in the RAM to a short
+   period of time.
+
+   The key store MUST be in a secure area, to avoid, as much as
+   possible, direct attack on the validation system and secrets
+   database.  Particularly, access to the key material should be limited
+   to programs and processes required by the validation system only.

@@ -1,0 +1,42 @@
+﻿@page
+@model OwaspDemo.Pages.LoginModel
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@{
+    Layout = null;
+    ViewData["Title"] = "OWASP 2FA Demo - Login";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<body>
+    <h1>Login to get cookies</h1>
+    <img src="images/login.png" alt="login image" class="img-banner">
+    <div class="form">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div>
+                <label asp-for="LoginData.Username"></label>
+                <span asp-validation-for="LoginData.Username" class="text-danger"></span>
+                <input asp-for="LoginData.Username" />
+            </div>
+            <div>
+                <label asp-for="LoginData.Password"></label>
+                <span asp-validation-for="LoginData.Password" class="text-danger"></span>
+                <input asp-for="LoginData.Password" />
+            </div>
+            <input type="submit" value="Login" />
+            <div class="form-link">
+                <a asp-page="/Register">Register</a>
+            </div>
+            @Html.AntiForgeryToken()
+        </form>
+    </div>
+    @await Html.PartialAsync("_Scripts")
+</body>
+</html>

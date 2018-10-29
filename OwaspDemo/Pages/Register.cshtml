@@ -1,0 +1,90 @@
+﻿@page
+@model OwaspDemo.Pages.RegisterModel
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@{
+    Layout = null;
+    ViewData["Title"] = "OWASP 2FA Demo - Register";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<body>
+    <h1>Register to find Mooncake</h1>
+    <img src="images/register.jpg" alt="register image" class="img-banner">
+    <div class="row">
+        <div class="column form">
+            <form method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div>
+                    <label asp-for="Input.Email"></label>
+                    <span asp-validation-for="Input.Email" class="text-danger"></span>
+                    <input asp-for="Input.Email" class="form-control" />
+                </div>
+                <div>
+                    <label asp-for="Input.Password"></label>
+                    <span asp-validation-for="Input.Password" class="text-danger"></span>
+                    <input asp-for="Input.Password" class="form-control" />
+                </div>
+                <div>
+                    <label asp-for="Input.ConfirmPassword"></label>
+                    <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+                    <input asp-for="Input.ConfirmPassword" class="form-control" />
+                </div>
+                <div>
+                    <label asp-for="Input.EnableTwoFactor"></label>
+                    <input id="EnableTwoFactor" asp-for="Input.EnableTwoFactor" class="form-control" />
+                    <div id="DisableTwoFactorWarning" class="hidden-msg form-msg">
+                        <div class="warning-msg">
+                            You are decreasing the security on your account by disabling two-factor authentication. Are you sure?<br />
+                        </div>
+                        <label for="ConfirmDisableTwoFactor">Yes I want to use a lower level of security</label>
+                        <input id="ConfirmDisableTwoFactor" class="form-control" type="checkbox" name="Input.ConfirmDisableTwoFactor" />
+                    </div>
+                </div>
+                <input id="RegisterUser" type="submit" value="Register" />
+                @Html.AntiForgeryToken()
+            </form>
+        </div>
+        <div class="column">
+            <div class="info-msg">
+                <p>Please consider a password manager to create and store your password securely. You should create a long password which is not reused on any other site.</p>
+                <p>
+                    Some password manager recommendations:
+                    <ul>
+                        <li><a href="https://www.dashlane.com">Dashlane</a></li>
+                        <li><a href="https://keepersecurity.com/personal.html">Keeper</a></li>
+                        <li><a href="https://lastpass.com">LastPass</a></li>
+                    </ul>
+                </p>
+            </div>
+        </div>
+    </div>
+    @await Html.PartialAsync("_Scripts")
+
+    <script type="text/javascript">
+        $("#EnableTwoFactor").click(function() {
+            if ($("#EnableTwoFactor").is(":checked")) {
+                $("#DisableTwoFactorWarning").hide();
+                $("#RegisterUser").prop("disabled", false);
+            } else {
+                $("#DisableTwoFactorWarning").show();
+                $("#RegisterUser").prop("disabled", true);
+            }
+        });
+        $("#ConfirmDisableTwoFactor").click(function() {
+            if ($("#ConfirmDisableTwoFactor").is(":checked")) {
+                $("#RegisterUser").prop("disabled", false);
+            } else {
+                $("#RegisterUser").prop("disabled", true);
+            }
+        });
+    </script>
+
+</body>
+</html>

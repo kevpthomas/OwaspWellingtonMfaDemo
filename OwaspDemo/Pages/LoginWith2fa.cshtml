@@ -1,0 +1,38 @@
+﻿@page
+@model OwaspDemo.Pages.LoginWith2faModel
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@{
+    ViewData["Title"] = "OWASP 2FA Demo - Two-factor authentication";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<body>
+    <h1>Provide your 2nd factor to avoid the trident-wielding cookies!</h1>
+    <img src="images/2fa.jpg" alt="2FA image" class="img-banner">
+    <div class="form">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-msg info-msg">
+                Your login is protected with an authenticator app. Enter your authenticator code below.
+            </div>
+            <div>
+                <label asp-for="Input.TwoFactorCode"></label>
+                <input asp-for="Input.TwoFactorCode" class="form-control" autocomplete="off" />
+                <span asp-validation-for="Input.TwoFactorCode" class="text-danger"></span>
+            </div>
+            <div>
+                <input type="submit" value="Login" />
+                @Html.AntiForgeryToken()
+            </div>
+        </form>
+    </div>
+    @await Html.PartialAsync("_Scripts")
+</body>
+</html>

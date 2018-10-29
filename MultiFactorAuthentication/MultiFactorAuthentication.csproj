@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="MultiFactorAuthentication.v3.ncrunchproject" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="OtpSharp.Core" Version="1.0.0" />
+    <PackageReference Include="Wiry.Base32" Version="1.1.1" />
+  </ItemGroup>
+
+</Project>

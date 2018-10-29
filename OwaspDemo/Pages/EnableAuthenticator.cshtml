@@ -1,0 +1,109 @@
+﻿@page
+@model OwaspDemo.Pages.EnableAuthenticatorModel
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@{
+    Layout = null;
+    ViewData["Title"] = "OWASP 2FA Demo - Configure authenticator app";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<body>
+    <h1>Enlist Avocato!</h1>
+    <img src="images/enable-authenticator.png" alt="Enable Authenticator image" class="img-banner">
+    <div class="row">
+        <div class="column">
+            <div class="info-msg">
+                <p>Do the following:</p>
+                <ol>
+                    <li>
+                        <p>
+                            Download a two-factor authenticator app like <strong>Authy</strong> for
+                            <a href="https://play.google.com/store/apps/details?id=com.authy.authy">Android</a> or
+                            <a href="https://itunes.apple.com/us/app/authy/id494168017">iOS</a>
+                        </p>
+                    </li>
+                    <li>
+                        <p>
+                            Scan the QR Code into your two factor authenticator app.
+                        </p>
+                    </li>
+                    <li>
+                        <p>
+                            Once you have scanned the QR code, your two factor authentication app will provide you
+                            with a unique code. Enter the code in the verification box.
+                        </p>
+                    </li>
+                </ol>
+                <p>Consider registering a 2nd device now to act as a backup.</p>
+            </div>
+        </div>
+        <div class="column">
+            <div class="row">
+                <div id="qrCodeReader">
+                    <div class="img-qrcode">
+                        <div id="qrCode"></div>
+                        <div id="qrCodeData" data-url="@Html.Raw(Model.AuthenticatorUri)"></div>
+                    </div>
+                    <div class="text-qrcode text-center">
+                        <a id="manualEntry" href="#">Manual Entry</a>
+                    </div>
+                </div>
+                <div id="qrCodeManual" style="display: none">
+                    <div class="text-qrcode-url">
+                        <p>@Model.QrCodeUrl</p>
+                    </div>
+                    <p>Enter this key into your two factor authenticator app. Spaces and casing do not matter.</p>
+                    <div class="text-qrcode text-center">
+                        <kbd>@Model.SharedKey</kbd>
+                    </div>
+                    <div class="text-qrcode text-center">
+                        <a id="readerEntry" href="#">QR Code Reader Entry</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="form">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div>
+                <label asp-for="Input.Code">Verification Code</label>
+                <span asp-validation-for="Input.Code" class="text-danger"></span>
+                <input asp-for="Input.Code" class="form-control" autocomplete="off" />
+            </div>
+            <div>
+                <input type="submit" value="Verify"/>
+                @Html.AntiForgeryToken()
+            </div>
+        </form>
+    </div>
+    @await Html.PartialAsync("_Scripts")
+
+    <script type="text/javascript" src="~/lib/qrcode.js"></script>
+    <script type="text/javascript">
+        new QRCode(document.getElementById("qrCode"),
+            {
+                text: "@Html.Raw(Model.AuthenticatorUri)",
+                width: 150,
+                height: 150
+            });
+
+        $("#manualEntry").click(function () {
+            $("#qrCodeReader").hide();
+            $("#qrCodeManual").show();
+        });
+
+        $("#readerEntry").click(function () {
+            $("#qrCodeReader").show();
+            $("#qrCodeManual").hide();
+        });
+    </script>
+</body>
+</html>
