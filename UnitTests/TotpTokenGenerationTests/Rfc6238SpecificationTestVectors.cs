@@ -89,7 +89,7 @@ namespace UnitTests.TotpTokenGenerationTests
         [Scenario]
         public void Compute2063Token(byte[] secretKey, string token)
         {
-            "Given UTC Time 2603-10-11 11:33:20"
+            "Given UTC Time 2603-10-11 11:33:20, which is beyond the year 2038"
                 .x(() => DateTime.SetupGet(x => x.UtcNow)
                     .Returns(new DateTime(2603, 10, 11, 11, 33, 20, DateTimeKind.Utc)));
 
